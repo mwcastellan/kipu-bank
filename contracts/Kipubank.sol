@@ -12,10 +12,10 @@ contract KipuBank {
     uint256 public immutable withdrawal_Limit = 1 ether;
     // @notice bank_Cap define el capital máximo del banco, despliegue en 1000 ETH a WEI.
     uint256 public constant bank_Cap = 1000 ether;
-    
-    // Mappings. 
+
+    // Mappings.
     // @notice Declaración de un mapping asociado a direcciones con balance por cada usuario (almacenado en wei).
-    mapping (address => uint256 ) private _balances;
+    mapping(address => uint256) private _balances;
 
     // Variables de almacenamiento.
     // @notice totalDeposits es el total de depositos realizados.
@@ -27,49 +27,53 @@ contract KipuBank {
     // @notice WithdrawalExceedsLimit error cuando el retiro se excede el límite permitido.
     error WithdrawalExceedsLimit(uint256 requested, uint256 limit);
     // @notice InsufficientBalance error cuando no hay suficiente balance para retirar.
-    error InsufficientBalance(uint256 available, uint256 requested);  
+    error InsufficientBalance(uint256 available, uint256 requested);
     // @notice DepositExceedCap error cuando el deposito excede el límite permitido del banco.
-    error DepositExceedCap(uint256 currentTotal, uint256 requested,uint256 cap);
+    error DepositExceedCap(
+        uint256 currentTotal,
+        uint256 requested,
+        uint256 cap
+    );
     // @notice NoBalanceToWithdraw error cuando se intenta retirar sin fondo.
     error NoBalanceToWithdraw();
     // @notice TransferFailed error cuando la transferencia falla.
     error TransferFailed();
 
-    // Eventos. 
+    // Eventos.
     // @notice Cuando el usuario deposita ETh
-    event Deposit (address indexed user, uint256 amountInWei);
+    event Deposit(address indexed user, uint256 amountInWei);
     // @notice Cuando el usuario retira ETh
     event Withdrawal(address indexed user, uint256 amountInWei);
 
     // Modificador.
     // @notice Mientras el valor a depositar es mayor que cero
-    modifier nonZeroValue (){
-        require(msg.value > 0,"Debe depositar una cantidad mayor a cero");
+    modifier nonZeroValue() {
+        require(msg.value > 0, "Debe depositar una cantidad mayor a cero");
         _;
     }
 
-    // Funciones. 
+    // Funciones.
     /*
     @notice function deposit() El usuario deposita de ETH en su boveda personal 
     se envia por (msg.value). 
     */
     function deposit() external payable nonZeroValue {
-        uint256 newTotal = address (this).balance;
-            if(newTotal > bank_Cap){
-            // Si el nuevo balance supera al limite del banco. 
-            revert DepositExceedCap ({
+        uint256 newTotal = address(this).balance;
+        if (newTotal > bank_Cap) {
+            // Si el nuevo balance supera al limite del banco.
+            revert DepositExceedCap({
                 currentTotal: newTotal - msg.value,
                 // El nuevo balance del contrato.
-                requested : msg.value,   
+                requested: msg.value,
                 // Valor enviado por el usuario.
-                cap : bank_Cap
-                }) ; 
-                // Revertamos con la palabra clave revert 
-                // que nos permite lanzar un error personalizado.
-            }
-            _balances[msg.sender] += msg.value ;
-            totalDeposits++;     
-        emit Deposit(msg.sender, msg.value);  
+                cap: bank_Cap
+            });
+            // Revertamos con la palabra clave revert
+            // que nos permite lanzar un error personalizado.
+        }
+        _balances[msg.sender] += msg.value;
+        totalDeposits++;
+        emit Deposit(msg.sender, msg.value);
         // Emitir event de deposito con el usuario y la cantidad en wei.
     }
 
@@ -81,20 +85,20 @@ contract KipuBank {
         // Obtener el balance del usuario desde el mapping _balances.
         uint256 userBalance = _balances[msg.sender];
         // Verificar si el usuario no tiene fondos en su bóveda.
-        if(userBalance == 0){
+        if (userBalance == 0) {
             // Revierte error cuando se intenta retirar sin fondo.
-            revert NoBalanceToWithdraw() ;
+            revert NoBalanceToWithdraw();
         }
-        // Verificar si el monto solicitado excede el límite permitido por transacción  
-        if(amount > withdrawal_Limit){  
+        // Verificar si el monto solicitado excede el límite permitido por transacción
+        if (amount > withdrawal_Limit) {
             // Revertir con error personalizado incluyendo lo solicitado y el límite
-            revert WithdrawalExceedsLimit({  
-                requested: amount, 
-                limit : withdrawal_Limit
-                });
+            revert WithdrawalExceedsLimit({
+                requested: amount,
+                limit: withdrawal_Limit
+            });
         }
         // Verificar si el usuario tiene suficiente balance para retirar el monto deseado.
-        if (amount > userBalance) {  
+        if (amount > userBalance) {
             // Revertir con error personalizado indicando cuánto tiene disponible y cuánto pidió
             revert InsufficientBalance({
                 available: userBalance,
@@ -103,29 +107,33 @@ contract KipuBank {
         }
         // Ejecutar el retiro.
         executeWithdrawal(msg.sender, amount);
-    } 
+    }
 
     // @notice function executeWithdrawal Ejecuta la transferencia de ETH al usuario y actualiza el estado interno.
-     function executeWithdrawal (address user, uint256 amount)private{
+    function executeWithdrawal(address user, uint256 amount) private {
         // Rebaja el balance interno del usuario.
         _balances[user] -= amount;
-         // Incrementar el contador total de retiros.
+        // Incrementar el contador total de retiros.
         totalWithdrawals++;
         // Realizar la transferencia segura de ETH al usuario usando call.
-        (bool success,) = payable(user).call{value:amount}("");
+        (bool success, ) = payable(user).call{value: amount}("");
         // Verificar que la transferencia fue exitosa.
-       if (!success) revert TransferFailed(); // Error personalizado.
+        if (!success) revert TransferFailed(); // Error personalizado.
         // Emitir evento indicando que el retiro se completó.
         emit Withdrawal(user, amount);
-     } 
+    }
 
     // @notice function getBalance Consulta el balance actual de un usuario.
-     function getBalance(address user) external view returns (uint256) {
+    function getBalance(address user) external view returns (uint256) {
         return _balances[user]; // Devolver el balance de un usuario por medio del mapping balances.
-     }
+    }
 
     // @notice getStats() Retorna estadísticas del banco.
-    function getStats() external view returns (uint256 deposits, uint256 Withdrawals){
-        return (totalDeposits , totalWithdrawals);
+    function getStats()
+        external
+        view
+        returns (uint256 deposits, uint256 Withdrawals)
+    {
+        return (totalDeposits, totalWithdrawals);
     }
 }
