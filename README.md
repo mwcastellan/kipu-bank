@@ -1,77 +1,106 @@
-# kipu-bank
+# KipuBank 🏦: Banco Descentralizado en Ethereum
 
-🏦 KipuBankNotFinished
-KipuBankNotFinished es un contrato inteligente en Solidity que simula una billetera bancaria básica donde los usuarios pueden depositar y retirar fondos. Aún está en desarrollo, pero ya incluye mecanismos de seguridad como protección contra reentrancia y múltiples métodos de retiro.
+## 📜 Descripción del Proyecto
 
-📜 Licencia
-Este contrato está bajo la licencia MIT.
+**KipuBank** es un contrato inteligente de **banco descentralizado** desarrollado en **Solidity** para la red Ethereum. Permite a los usuarios **depositar** y **retirar** ETH de manera segura, actuando como una bóveda personal.
 
-solidity
-// SPDX-License-Identifier: MIT
-⚙️ Versión de Solidity
-solidity
-pragma solidity >0.8.0;
-🚀 Funcionalidades
+El contrato impone límites estrictos tanto para las transacciones individuales de retiro como para la capacidad total de capital que puede albergar el banco (Cap). Utiliza **errores personalizados** (Custom Errors) para proporcionar mensajes de fallo claros y eficientes, y **eventos** para facilitar el seguimiento de las transacciones en la blockchain.
 
-1. pay()
-   Permite a los usuarios depositar exactamente 0.1 ether en el contrato.
+---
 
-Verifica que el monto sea correcto.
+## ✨ Características Principales
 
-Registra el depósito en el mapping balance.
+* **Depósitos de ETH:** Los usuarios pueden depositar ETH en su bóveda personal dentro del contrato.
+* **Retiros de ETH:** Permite a los usuarios retirar su balance de ETH.
+* **Límite de Retiro por Transacción:** Existe un límite de **1 ETH** por retiro para mitigar riesgos.
+* **Capital Máximo (Cap):** El banco tiene un capital máximo de **1000 ETH**. Cualquier depósito que intente superar este límite será revertido.
+* **Seguridad y Eficiencia:** Implementación de un modificador (`nonZeroValue`) y uso de `call` para la transferencia de ETH, asegurando un mecanismo de retiro seguro y resistente a reentrancy.
+* **Consulta de Balance:** Función para que cualquier usuario pueda consultar su balance actual.
+* **Estadísticas del Banco:** Función para consultar el total de depósitos y retiros realizados.
 
-Guarda la dirección en el array addr.
+---
 
-Emite el evento paid.
+## ⚙️ Detalles Técnicos del Contrato
 
-solidity
-function pay() external payable 2. withdraw()
-Retira el saldo del usuario usando call, con protección contra reentrancia.
+### Constantes e Inmutables
 
-Usa el modificador reentrancyGuard.
+| Nombre | Tipo | Valor Inicial | Descripción |
+| :--- | :--- | :--- | :--- |
+| `withdrawal_Limit` | `uint256 public immutable` | `1 ether` (1 ETH) | Límite máximo de ETH que se puede retirar por transacción. |
+| `bank_Cap` | `uint256 public constant` | `1000 ether` (1000 ETH) | El capital máximo que el contrato puede contener. |
 
-Establece el balance en cero antes de transferir.
+### Almacenamiento
 
-Devuelve los datos de la llamada.
+| Nombre | Tipo | Visibilidad | Descripción |
+| :--- | :--- | :--- | :--- |
+| `_balances` | `mapping (address => uint256) private` | `private` | Almacena el balance de ETH (en Wei) de cada dirección de usuario. |
+| `totalDeposits` | `uint256 public` | `public` | Contador del número total de depósitos realizados. |
+| `totalWithdrawals` | `uint256 public` | `public` | Contador del número total de retiros realizados. |
 
-solidity
-function withdraw() external reentrancyGuard returns(bytes memory) 3. withdraw2()
-Retira el saldo usando .transfer().
+### Funciones Clave
 
-Establece el balance en cero antes de transferir.
+| Función | Visibilidad | Modificadores | Descripción |
+| :--- | :--- | :--- | :--- |
+| `deposit()` | `external payable` | `nonZeroValue` | Permite al usuario enviar ETH al contrato y lo registra en su balance. **Revierte si supera el `bank_Cap`.** |
+| `withdraw(uint256 amount)` | `external` | N/A | Permite al usuario retirar `amount` de ETH. **Verifica `withdrawal_Limit` y balance suficiente.** |
+| `executeWithdrawal(address user, uint256 amount)` | `private` | N/A | Función interna que realiza la transferencia de ETH (`call`) y actualiza el estado. |
+| `getBalance(address user)` | `external view` | N/A | Retorna el balance de ETH (en Wei) de una dirección específica. |
+| `getStats()` | `external view` | N/A | Retorna el total de depósitos y retiros realizados. |
 
-Usa gas limitado (2300), lo que puede fallar si el receptor tiene lógica compleja.
+---
 
-solidity
-function withdraw2() external 4. withdraw3()
-Retira el saldo usando .send().
+## 🚫 Errores Personalizados (Custom Errors)
 
-Similar a .transfer(), pero devuelve un booleano.
+El contrato utiliza los siguientes errores personalizados para una mejor gestión y claridad en los fallos:
 
-Revierte si la transferencia falla.
+* `WithdrawalExceedsLimit(uint256 requested, uint256 limit)`
+* `InsufficientBalance(uint256 available, uint256 requested)`
+* `DepositExceedCap(uint256 currentTotal, uint256 requested, uint256 cap)`
+* `NoBalanceToWithdraw()`
+* `TransferFailed()`
 
-solidity
-function withdraw3() external
-🛡️ Seguridad
-Protección contra reentrancia: Implementada con el modificador reentrancyGuard usando una bandera booleana.
+---
 
-Validación de valor: Solo se acepta exactamente 0.1 ether por depósito.
+## 📢 Eventos
 
-Balance cero antes de transferir: Previene ataques de reentrancia.
+Los siguientes eventos son emitidos para indexar y rastrear las transacciones en la cadena:
 
-📦 Variables clave
-Nombre Tipo Descripción
-balance mapping(address => uint256) Registra el saldo de cada usuario. No iterable.
-addr address[] Lista de direcciones que han pagado.
-flag bool Usada para bloquear reentrancia.
-📣 Eventos
-solidity
-event paid(address indexed payer, uint256 amount);
-Se emite cada vez que un usuario realiza un pago exitoso.
+* `event Deposit (address indexed user, uint256 amountInWei)`
+* `event Withdrawal(address indexed user, uint256 amountInWei)`
 
-⚠️ Consideraciones
-El contrato no tiene funciones administrativas ni de recuperación.
+---
 
-addr[] puede crecer indefinidamente, lo que podría afectar el gas en futuras funciones.
+## 🚀 Uso y Despliegue
 
-No hay validación para evitar múltiples entradas duplicadas en addr.
+### Requisitos
+
+* Compilador de Solidity **versión 0.8.0 o superior** (`pragma solidity >0.8.0;`).
+* Una billetera de Ethereum con ETH para el despliegue y las interacciones.
+* Entorno de desarrollo como **Remix**, **Hardhat**, o **Foundry**.
+
+### Interacción (Ejemplo con Web3/Ethers.js)
+
+#### 1. Depositar
+
+```javascript
+// Asegúrate de enviar ETH en el objeto de la transacción
+const amountToSend = ethers.utils.parseEther("0.5"); // 0.5 ETH
+const tx = await kipuBank.deposit({ value: amountToSend });
+await tx.wait();
+console.log("Depósito exitoso!");
+2. Retirar
+JavaScript
+
+// El monto a retirar se pasa como argumento, no en el valor de la transacción.
+const amountToWithdraw = ethers.utils.parseEther("0.1"); // 0.1 ETH
+const tx = await kipuBank.withdraw(amountToWithdraw);
+await tx.wait();
+console.log("Retiro exitoso!");
+3. Consultar Balance
+JavaScript
+
+const userAddress = "0x..."; // Dirección del usuario
+const balance = await kipuBank.getBalance(userAddress);
+console.log(`Balance del usuario: ${ethers.utils.formatEther(balance)} ETH`);
+👤 Autor
+Marcelo Walter Castellan
