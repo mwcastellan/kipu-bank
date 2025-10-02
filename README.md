@@ -1,4 +1,5 @@
 # KipuBank 🏦: Banco Descentralizado en Ethereum
+## 👤 Autor: Marcelo Walter Castellan
 
 ## 📜 Descripción del Proyecto
 
@@ -102,5 +103,4 @@ JavaScript
 const userAddress = "0x..."; // Dirección del usuario
 const balance = await kipuBank.getBalance(userAddress);
 console.log(`Balance del usuario: ${ethers.utils.formatEther(balance)} ETH`);
-👤 Autor
-Marcelo Walter Castellan
+
