@@ -3,7 +3,8 @@ pragma solidity >0.8.0;
 
 /*
 @title KipuBank es un banco descentralizado en Ethereum.
-@author Marcelo Walter Castellan
+@author Marcelo Walter Castellan.
+@Date 01/10/2025.
 */
 
 contract KipuBank {
