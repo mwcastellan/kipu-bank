@@ -2,13 +2,13 @@
 pragma solidity >0.8.0;
 
 /*
-@title KipuBank es un banco seguro y descentralizado para depositar y retirar ETH
+@title KipuBank es un banco descentralizado en Ethereum.
 @author Marcelo Walter Castellan
 */
 
 contract KipuBank {
     // Constantes e Inmutables.
-    // @notice withdrawal_Limit define el Límite por transacción de retiro 1 ETH7.
+    // @notice withdrawal_Limit define el Límite por transacción de retiro 1 ETH.
     uint256 public immutable withdrawal_Limit = 1 ether;
     // @notice bank_Cap define el capital máximo del banco, despliegue en 1000 ETH a WEI.
     uint256 public constant bank_Cap = 1000 ether;
