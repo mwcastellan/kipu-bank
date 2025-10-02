@@ -1,6 +1,5 @@
 # KipuBank 🏦: Banco Descentralizado en Ethereum
-## 👤 Autor
-Marcelo Walter Castellan
+## 👤 Autor: Marcelo Walter Castellan
 
 ## 📜 Descripción del Proyecto
 
