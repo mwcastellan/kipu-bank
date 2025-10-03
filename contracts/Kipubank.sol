@@ -4,15 +4,21 @@ pragma solidity >0.8.0;
 /*
 @title KipuBank es un banco descentralizado en Ethereum.
 @author Marcelo Walter Castellan.
-@Date 01/10/2025.
+@Date 03/10/2025.
 */
 
 contract KipuBank {
     // Constantes e Inmutables.
-    // @notice withdrawal_Limit define el Límite por transacción de retiro 1 ETH.
-    uint256 public immutable withdrawal_Limit = 1 ether;
-    // @notice bank_Cap define el capital máximo del banco, despliegue en 1000 ETH a WEI.
-    uint256 public constant bank_Cap = 1000 ether;
+    // @notice Límite máximo de retiro por transacción
+    uint256 public immutable withdrawLimit;
+    // @notice Límite global de depósitos permitido en el contrato
+    uint256 public immutable bankCap;
+
+    // Constructor
+    constructor(uint256 _bankCap, uint256 _withdrawLimit) {
+        bankCap = _bankCap;
+        withdrawLimit = _withdrawLimit;
+    }
 
     // Mappings.
     // @notice Declaración de un mapping asociado a direcciones con balance por cada usuario (almacenado en wei).
@@ -60,14 +66,14 @@ contract KipuBank {
     */
     function deposit() external payable nonZeroValue {
         uint256 newTotal = address(this).balance;
-        if (newTotal > bank_Cap) {
+        if (newTotal > bankCap) {
             // Si el nuevo balance supera al limite del banco.
             revert DepositExceedCap({
                 currentTotal: newTotal - msg.value,
                 // El nuevo balance del contrato.
                 requested: msg.value,
                 // Valor enviado por el usuario.
-                cap: bank_Cap
+                cap: bankCap
             });
             // Revertamos con la palabra clave revert
             // que nos permite lanzar un error personalizado.
@@ -91,11 +97,11 @@ contract KipuBank {
             revert NoBalanceToWithdraw();
         }
         // Verificar si el monto solicitado excede el límite permitido por transacción
-        if (amount > withdrawal_Limit) {
+        if (amount > withdrawLimit) {
             // Revertir con error personalizado incluyendo lo solicitado y el límite
             revert WithdrawalExceedsLimit({
                 requested: amount,
-                limit: withdrawal_Limit
+                limit: withdrawLimit
             });
         }
         // Verificar si el usuario tiene suficiente balance para retirar el monto deseado.
