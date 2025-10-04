@@ -1,4 +1,4 @@
-🏦 KipuBank – Contrato inteligente en Solidity
+🏦 ## KipuBank – Contrato inteligente en Solidity
 ## Autor: Marcelo Walter Castellan 
 ## Fecha: 03/10/2025 
 ## Red: Sepolia Testnet Dirección del contrato: 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
