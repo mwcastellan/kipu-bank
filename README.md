@@ -3,7 +3,7 @@
 ## Fecha: 03/10/2025 
 ## Red: Sepolia Testnet Dirección del contrato: 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
 
-# 📌 Descripción
+## 📌 Descripción
 KipuBank es un contrato inteligente que simula un banco descentralizado en Ethereum. Cada usuario puede depositar y retirar ETH en su bóveda personal, respetando dos restricciones clave:
 
 Límite global de depósitos (bankCap): impide que el contrato reciba más ETH que el tope definido en el despliegue.
@@ -12,7 +12,7 @@ Límite de retiro por transacción (withdrawLimit): restringe cuánto puede reti
 
 El contrato está diseñado con buenas prácticas de seguridad, trazabilidad y eficiencia de gas.
 
-⚙️ Funcionalidades
+## ⚙️ Funcionalidades
 ✅ Depósito
 Los usuarios pueden depositar ETH si el total no excede bankCap.
 
@@ -34,7 +34,7 @@ Se emite un evento de retiro.
 ✅ Consulta de balance
 Cualquier usuario puede consultar su balance con getBalance(address).
 
-🧱 Estructura del contrato
+## 🧱 Estructura del contrato
 Componente	Descripción
 bankCap	Límite global de depósitos (inmutable)
 withdrawLimit	Límite por transacción (inmutable)
@@ -61,7 +61,8 @@ Eventos para trazabilidad.
 
 Modificador nonZeroValue para evitar depósitos nulos.
 
-🚀 Despliegue
-Este contrato fue desplegado en la red Sepolia usando Remix IDE. La dirección del contrato puede consultarse en Etherscan Sepolia: 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
+## 🚀 Despliegue
+Este contrato fue desplegado en la red Sepolia usando Remix IDE. 
+La dirección del contrato puede consultarse en Etherscan Sepolia: 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
 
 
