@@ -13,14 +13,14 @@ Límite de retiro por transacción (withdrawLimit): restringe cuánto puede reti
 El contrato está diseñado con buenas prácticas de seguridad, trazabilidad y eficiencia de gas.
 
 ## ⚙️ Funcionalidades
-✅ Depósito
+✅ Depósito (deposit)
 Los usuarios pueden depositar ETH si el total no excede bankCap.
 
 Se valida que el monto sea mayor a cero.
 
 Se actualiza el balance del usuario y se emite un evento.
 
-✅ Retiro
+✅ Retiro (withdraw)
 Los usuarios pueden retirar ETH si:
 
 Tienen fondos suficientes.
