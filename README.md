@@ -35,21 +35,21 @@ Se emite un evento de retiro.
 Cualquier usuario puede consultar su balance con getBalance(address).
 
 ## 🧱 Estructura del contrato
-Componente	Descripción
-bankCap	Límite global de depósitos (inmutable)
-withdrawLimit	Límite por transacción (inmutable)
-_balances	Mapping privado de balances por usuario
-totalDeposits	Contador de depósitos
-totalWithdrawals	Contador de retiros
-Deposit()	Evento emitido al depositar
-Withdrawal()	Evento emitido al retirar
-DepositExceedCap	Error si el depósito excede el límite global
-WithdrawalExceedsLimit	Error si el retiro excede el límite por transacción
-InsufficientBalance	Error si el usuario no tiene suficiente balance
-NoBalanceToWithdraw	Error si el usuario intenta retirar sin fondos
-TransferFailed	Error si la transferencia con call falla
-🛡️ Buenas prácticas aplicadas
-Uso de immutable para eficiencia de gas.
+  Componente	Descripción
+  bankCap	Límite global de depósitos (inmutable)
+  withdrawLimit	Límite por transacción (inmutable)
+  _balances	Mapping privado de balances por usuario
+  totalDeposits	Contador de depósitos
+  totalWithdrawals	Contador de retiros
+  Deposit()	Evento emitido al depositar
+  Withdrawal()	Evento emitido al retirar
+  DepositExceedCap	Error si el depósito excede el límite global
+  WithdrawalExceedsLimit	Error si el retiro excede el límite por transacción
+  InsufficientBalance	Error si el usuario no tiene suficiente balance
+  NoBalanceToWithdraw	Error si el usuario intenta retirar sin fondos
+  TransferFailed	Error si la transferencia con call falla
+  🛡️ Buenas prácticas aplicadas
+  Uso de immutable para eficiencia de gas.
 
 Validaciones con errores personalizados (error) en lugar de require con strings.
 
