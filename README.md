@@ -63,6 +63,7 @@ Modificador nonZeroValue para evitar depósitos nulos.
 
 ## 🚀 Despliegue
 Este contrato fue desplegado en la red Sepolia usando Remix IDE. 
-La dirección del contrato puede consultarse en Etherscan Sepolia: 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
+La dirección del contrato puede consultarse en Etherscan Sepolia:
+0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
 
 
