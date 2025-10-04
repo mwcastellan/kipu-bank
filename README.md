@@ -39,7 +39,9 @@ Cualquier usuario puede consultar su balance con getBalance(address).
 | Componente               | Descripción                                                       |
 |--------------------------|-------------------------------------------------------------------|
 | `bankCap`                | Límite global de depósitos (inmutable)                            |
+|                          | _bankCap (uint256): 199000000000000000000                         |
 | `withdrawLimit`          | Límite por transacción (inmutable)                                |
+|                          | _withdrawLimit (uint256): 88000000000000000000                    |
 | `_balances`              | Mapping privado de balances por usuario                           |
 | `totalDeposits`          | Contador de depósitos realizados                                  |
 | `totalWithdrawals`       | Contador de retiros realizados                                    |
