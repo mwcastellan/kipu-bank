@@ -67,3 +67,11 @@ La dirección del contrato puede consultarse en Etherscan Sepolia:
 0xB14350EB8dC6696E5C55de80FFc62D985A9DEeF4
 
 
+ COMENTARIOS LUEGO DE LA ENTREGA DEL TP2:
+  Corrección 1:
+- natspec incompleto. Falta params, returns. No están bien hecho los comentarios para natspec tampoco. (Fundamental)
+- se pudo usar modifier para nonZeroWithdrawal o onlySufficientBalance.
+- Hay cuentas que no hace falta el checkeo de overflow/underflows por lo que pudiste usar unchecked.
+- Los comentarios están en castellano en vez de estar en ingles.
+
+
